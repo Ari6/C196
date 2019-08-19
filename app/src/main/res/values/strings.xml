@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">C196</string>
     <string name="action_settings">Settings</string>
+    <string name="termButton">Term List</string>
+    <string name="courseButton">Course List</string>
+    <string name="assignmentButton">Assigment List</string>
+    <string name="AppTitle">Course View App</string>
 </resources>
