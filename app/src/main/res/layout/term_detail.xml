@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/termTitle"
+            android:layout_width="122dp"
+            android:layout_height="match_parent"
+            android:text="Title"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/termTitleEdit"
+            android:layout_width="290dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/termStart"
+            android:layout_width="186dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Start Date"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/termStartEdit"
+            android:layout_width="290dp"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:inputType="date" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/termEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="End Date"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/termEndEdit"
+            android:layout_width="290dp"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:inputType="date" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/termSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="termSaveOnClick"
+        android:text="Save" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/termDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="termDetailOnClick"
+        android:text="Detail" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="match_parent"
+        android:layout_height="45dp" />
+
+    <Button
+        android:id="@+id/termDelete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="termDeleteOnClick"
+        android:text="@string/delete"
+        android:textColor="@color/colorAccent" />
+
+</LinearLayout>

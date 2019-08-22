@@ -1,8 +1,17 @@
 package com.ntlts.c196.database;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.BaseColumns;
+
+import com.ntlts.c196.Course;
+import com.ntlts.c196.Term;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CourseHelper extends SQLiteOpenHelper {
     private static final int DATABSE_VERSION = 1;
@@ -35,5 +44,72 @@ public class CourseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL(DELETE_ENTRIES);
         onCreate(db);
+    }
+
+    public List<Course> getCourseWithTermId(SQLiteDatabase db, long termId){
+        String[] projection = {
+                BaseColumns._ID,
+                CourseDB.CourseEntry.TITLE,
+                CourseDB.CourseEntry.START,
+                CourseDB.CourseEntry.ANTICIPATED_DATE,
+                CourseDB.CourseEntry.DUE_DATE,
+                CourseDB.CourseEntry.NOTE,
+                CourseDB.CourseEntry.STATUS,
+                CourseDB.CourseEntry.MENTORID,
+                CourseDB.CourseEntry.TERMID
+        };
+        String selection = CourseDB.CourseEntry.TERMID + " = ?";
+        String[] selectionArgs = {String.valueOf(termId)};
+        String sortOrder = CourseDB.CourseEntry.START;
+        Cursor cursor = db.query(
+                CourseDB.CourseEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+        List<Course> courseList = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            Course course = new Course();
+            course.setId((int) cursor.getLong(
+                    cursor.getColumnIndexOrThrow(CourseDB.CourseEntry._ID)));
+            course.setTitle(
+                    cursor.getString(
+                            cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.TITLE)));
+            course.setStart(
+                    cursor.getString(
+                            cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.START)));
+            course.setAnticipatedEnd(
+                    cursor.getString(
+                            cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.ANTICIPATED_DATE)));
+            course.setDueDate(
+                    cursor.getString(
+                            cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.DUE_DATE)));
+            course.setNote(cursor.getString(
+                    cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.NOTE)));
+            course.setStatus(
+                    cursor.getString(cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.STATUS)));
+            course.setMentorId(cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.MENTORID));
+            course.setTermId(cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.TERMID));
+            courseList.add(course);
+        }
+        cursor.close();
+        return courseList;
+    }
+
+    public int insertCourse(SQLiteDatabase db, Course course){
+        ContentValues values = new ContentValues();
+        values.put(CourseDB.CourseEntry.TITLE, course.getTitle());
+        values.put(CourseDB.CourseEntry.START, course.getStart());
+        values.put(CourseDB.CourseEntry.ANTICIPATED_DATE, course.getAnticipatedEnd());
+        values.put(CourseDB.CourseEntry.DUE_DATE, course.getDueDate());
+        values.put(CourseDB.CourseEntry.NOTE, course.getNote());
+        values.put(CourseDB.CourseEntry.STATUS, course.getStatus());
+        values.put(CourseDB.CourseEntry.MENTORID, course.getMentorId());
+        values.put(CourseDB.CourseEntry.TERMID, course.getTermId());
+        long newRowId = db.insert(CourseDB.CourseEntry.TABLE_NAME, null, values);
+        return (int)newRowId;
     }
 }
