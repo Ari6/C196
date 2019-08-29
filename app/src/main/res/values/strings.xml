@@ -8,4 +8,6 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="add">Add</string>
+    <string name="channel_name">notification channel</string>
+    <string name="channel_description">notificaiton channel description</string>
 </resources>

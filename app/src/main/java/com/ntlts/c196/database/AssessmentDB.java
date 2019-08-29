@@ -10,5 +10,8 @@ public class AssessmentDB {
         public static String TITLE = "title";
         public static String OAPA = "oaPa";
         public static String COURSEID = "courseId";
+        public static String PERFORMANCE = "performance";
+        //public static String DUEDATE = "dueDate";
+        public static String GOALDATE = "goalDate";
     }
 }

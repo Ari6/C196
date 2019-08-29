@@ -1,21 +1,48 @@
 package com.ntlts.c196;
 
 public class Course {
-    private long id;
+    private int id;
     private String title;
     private String start;
     private String anticipatedEnd;
     private String dueDate;
     private String note;
     private String status;
-    private long mentorId;
-    private long termId;
+    //private int mentorId;
+    private int termId;
+    private String mentorName;
+    private String mentorPhone;
+    private String mentorEmail;
 
-    public long getId() {
+    public String getMentorName() {
+        return mentorName;
+    }
+
+    public void setMentorName(String mentorName) {
+        this.mentorName = mentorName;
+    }
+
+    public String getMentorPhone() {
+        return mentorPhone;
+    }
+
+    public void setMentorPhone(String mentorPhone) {
+        this.mentorPhone = mentorPhone;
+    }
+
+    public String getMentorEmail() {
+        return mentorEmail;
+    }
+
+    public void setMentorEmail(String mentorEmail) {
+        this.mentorEmail = mentorEmail;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -66,20 +93,20 @@ public class Course {
     public void setStatus(String status) {
         this.status = status;
     }
-
-    public long getMentorId() {
+/*
+    public int getMentorId() {
         return mentorId;
     }
 
-    public void setMentorId(long mentorId) {
+    public void setMentorId(int mentorId) {
         this.mentorId = mentorId;
     }
-
-    public long getTermId() {
+*/
+    public int getTermId() {
         return termId;
     }
 
-    public void setTermId(long termId) {
+    public void setTermId(int termId) {
         this.termId = termId;
     }
 }

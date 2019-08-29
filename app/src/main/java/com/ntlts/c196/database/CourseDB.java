@@ -13,8 +13,11 @@ public class CourseDB {
         public static String DUE_DATE = "dueDate";
         public static String NOTE = "note";
         public static String STATUS = "status";
-        public static String MENTORID = "mentorId";
+        //public static String MENTORID = "mentorId";
         public static String TERMID = "termId";
+        public static String MENTORNAME = "mentorName";
+        public static String MENTORPHONE = "mentorPhone";
+        public static String MENTOREMAIL = "mentorEmail";
 
     }
 }

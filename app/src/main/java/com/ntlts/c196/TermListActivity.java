@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CheckBox;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,16 +28,19 @@ public class TermListActivity extends AppCompatActivity
     RecyclerView.LayoutManager layoutManager;
     List<Term> termList;
     TermAdapter termAdapter;
-    Toolbar toolbar;
     CheckBox checkBox;
     SQLiteDatabase db;
+    Toolbar termListToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.term_list_layout);
 
-        //toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+        termListToolbar = (Toolbar) findViewById(R.id.termListToolbar);
+        setSupportActionBar(termListToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         //Get all term
         TermHelper termDbHelper = new TermHelper(this);
@@ -61,7 +65,27 @@ public class TermListActivity extends AppCompatActivity
     public void onClick(int position) {
         Intent intent = new Intent(this, TermDetailActivity.class);
         intent.putExtra("com.ntlts.c196.TERMID", termList.get(position).getId());
-        startActivity(intent);
+        intent.putExtra("com.ntlts.c196.ADD", false);
+        //startActivity(intent);
+        startActivityForResult(intent, 5);
         db.close();
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    public void termAdd(View view){
+        Intent intent = new Intent(this, TermDetailActivity.class);
+        intent.putExtra("com.ntlts.c196.ADD", true);
+        startActivityForResult(intent,5);
+    }
+
 }

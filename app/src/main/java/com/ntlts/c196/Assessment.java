@@ -1,16 +1,43 @@
 package com.ntlts.c196;
 
 public class Assessment {
-    private long assessmentId;
+    private int assessmentId;
     private String title;
     private String OaPa;
-    private long courseId;
+    private int courseId;
+    //private String dueDate;
+    private String performance;
+    private String goalDate;
 
-    public long getAssessmentId() {
+    public String getGoalDate() {
+        return goalDate;
+    }
+
+    public void setGoalDate(String goalDate) {
+        this.goalDate = goalDate;
+    }
+
+    /*public String getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(String dueDate) {
+        this.dueDate = dueDate;
+    }
+*/
+    public String getPerformance() {
+        return performance;
+    }
+
+    public void setPerformance(String performance) {
+        this.performance = performance;
+    }
+
+    public int getAssessmentId() {
         return assessmentId;
     }
 
-    public void setAssessmentId(long assessmentId) {
+    public void setAssessmentId(int assessmentId) {
         this.assessmentId = assessmentId;
     }
 
@@ -30,11 +57,11 @@ public class Assessment {
         OaPa = oaPa;
     }
 
-    public long getCourseId() {
+    public int getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(long courseId) {
+    public void setCourseId(int courseId) {
         this.courseId = courseId;
     }
 }
