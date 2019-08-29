@@ -14,7 +14,7 @@
         android:overScrollMode="always"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/courseDetailToolbar"
         app:layout_constraintVertical_bias="0.0">
@@ -32,7 +32,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:onClick="assignmentDetailOnClick"
-                android:text="Assignment"
+                android:text="Assessment"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -45,10 +45,8 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
                 android:onClick="courseDeleteButtonOnClick"
                 android:text="Delete"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -67,6 +65,26 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/courseAssessmentRecyclerView" />
+
+            <Button
+                android:id="@+id/courseOn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:onClick="courseOnOnClick"
+                android:text="On"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView19"
+                app:layout_constraintEnd_toStartOf="@+id/courseOff" />
+
+            <Button
+                android:id="@+id/courseOff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:onClick="courseOffOnClick"
+                android:text="Off"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView19"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <EditText
                 android:id="@+id/courseAnticipatedEnd"
@@ -298,15 +316,6 @@
                 android:text="Alert"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/courseDeleteButton" />
-
-            <ToggleButton
-                android:id="@+id/courseAlert"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="ToggleButton"
-                app:layout_constraintBaseline_toBaselineOf="@+id/textView19"
-                app:layout_constraintEnd_toEndOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/courseAssessmentRecyclerView"

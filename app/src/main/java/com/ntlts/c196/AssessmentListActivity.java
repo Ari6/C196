@@ -45,10 +45,7 @@ public class AssessmentListActivity extends AppCompatActivity
         //database
         assessmentHelper = new AssessmentHelper(this);
         db = assessmentHelper.getWritableDatabase();
-        //DEMO
-        //InitialCreation ic = new InitialCreation();
-        //ic.createAssessment(db);
-        //DEMO
+
         assessmentList = assessmentHelper.getAssessmentWithCourseId(db, courseId);
         assessmentRecycleView = findViewById(R.id.assessmentRecyclerView);
         layoutManager = new LinearLayoutManager(this);
@@ -63,6 +60,7 @@ public class AssessmentListActivity extends AppCompatActivity
         Intent intent = new Intent(this, AssessmentDetailActivity.class);
         intent.putExtra(
                 "com.ntlts.c196.ASSESSMENTID", assessmentList.get(position).getAssessmentId());
+        intent.putExtra("com.ntlts.c196.COURSEID", assessmentList.get(position).getCourseId());
         startActivityForResult(intent, 4);
     }
 
@@ -115,6 +113,7 @@ public class AssessmentListActivity extends AppCompatActivity
     public void asseessmentAdd(View view){
         Intent intent = new Intent(this, AssessmentDetailActivity.class);
         intent.putExtra("com.ntlts.c196.ADD", true);
+        intent.putExtra("com.ntlts.c196.COURSEID", courseId);
         startActivityForResult(intent, 4);
     }
 

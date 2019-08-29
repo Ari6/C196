@@ -1,6 +1,8 @@
 package com.ntlts.c196;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
@@ -32,7 +35,10 @@ import com.ntlts.c196.database.AssessmentDB;
 import com.ntlts.c196.database.AssessmentHelper;
 import com.ntlts.c196.database.CourseHelper;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class AssessmentDetailActivity extends AppCompatActivity {
@@ -55,6 +61,9 @@ public class AssessmentDetailActivity extends AppCompatActivity {
     SQLiteDatabase courseDb;
     private ShareActionProvider shareActionProvider;
     DatePickerDialog.OnDateSetListener goalDateSetListener;
+    private Button assessmentOn;
+    private Button assessmentOff;
+    private Button assessmentDeleteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +128,7 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         spinnerCourse.setAdapter(courseAdapter);
 
         //set selected spinner Course
+        courseId = assessment.getCourseId();
         int spinnerCoursePosition = 0;
         for(int i = 0; i < courseList.size(); i++){
             if(courseList.get(i).getId() == assessment.getCourseId()){
@@ -128,6 +138,8 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         }
         spinnerCourse.setSelection(spinnerCoursePosition);
         if(intent.getBooleanExtra("com.ntlts.c196.ADD", false) == false){
+            courseId = assessment.getCourseId();
+
             /*
             date for Goal
             */
@@ -157,7 +169,18 @@ public class AssessmentDetailActivity extends AppCompatActivity {
                 }
             };
         } else {
-                        /*
+            courseId = intent.getIntExtra("com.ntlts.c196.COURSEID",0);
+            /*
+            Disable alert buttons
+             */
+            assessmentOn = findViewById(R.id.assessmentOn);
+            assessmentOff = findViewById(R.id.assessmentOff);
+            assessmentDeleteButton = findViewById(R.id.assessmentDeleteButton);
+            assessmentOn.setEnabled(false);
+            assessmentOff.setEnabled(false);
+            assessmentDeleteButton.setEnabled(false);
+
+            /*
             date for Goal
             */
             assessmentGoalDate = findViewById(R.id.assessmentGoalDateEdit);
@@ -189,21 +212,27 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         }
     }
     public void assessmentSaveButtonOnClick(View view){
-        Assessment assessment = new Assessment();
-        assessment.setAssessmentId(assessmentId);
-        assessment.setTitle(assessmentTitleEdit.getText().toString());
-        assessment.setGoalDate(assessmentGoalDate.getText().toString());
-        //assessment.setDueDate(assessmentDueDate.getText().toString());
-        assessment.setPerformance(assessmentPerformance.getText().toString());
-        assessment.setCourseId(courseList.get(spinnerCourse.getSelectedItemPosition()).getId());
-        assessment.setOaPa(oaPaList[spinnerOaPa.getSelectedItemPosition()]);
-        Intent intent = getIntent();
-        if(intent.getBooleanExtra("com.ntlts.c196.ADD", false) == false) {
-            ah.updateAssessment(assessmentDb, assessment);
-            popupUpdated("The record has been updated.");
+        if(!(assessmentGoalDate.getText().toString().equals(""))) {
+            Assessment assessment = new Assessment();
+            assessment.setAssessmentId(assessmentId);
+            assessment.setTitle(assessmentTitleEdit.getText().toString());
+            assessment.setGoalDate(assessmentGoalDate.getText().toString());
+            //assessment.setDueDate(assessmentDueDate.getText().toString());
+            assessment.setPerformance(assessmentPerformance.getText().toString());
+            assessment.setCourseId(courseList.get(spinnerCourse.getSelectedItemPosition()).getId());
+            assessment.setOaPa(oaPaList[spinnerOaPa.getSelectedItemPosition()]);
+            Intent intent = getIntent();
+            if (intent.getBooleanExtra("com.ntlts.c196.ADD", false) == false) {
+                ah.updateAssessment(assessmentDb, assessment);
+                courseId = ah.getAssessment(assessmentDb, assessmentId).getCourseId();
+                popupUpdated("The record has been updated.");
+            } else {
+                assessmentId = ah.insertAssessment(assessmentDb, assessment);
+                courseId = ah.getAssessment(assessmentDb, assessmentId).getCourseId();
+                popupUpdated("The record has been added.");
+            }
         } else {
-            assessmentId = ah.insertAssessment(assessmentDb, assessment);
-            popupUpdated("The record has been added.");
+            popupUpdated("Please select Goal Date");
         }
     }
 
@@ -211,13 +240,17 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if(intent.getBooleanExtra("com.ntlts.c196.ADD", false) == false) {
             if (popupDeleted(this)) {
+                courseId = ah.getAssessment(assessmentDb, assessmentId).getCourseId();
+                Log.d("AD delete courseId: ", String.valueOf(courseId));
                 ah.deleteAssessment(assessmentDb, assessmentId);
                 popupUpdated("The record has been deleted.");
                 assessmentDb.close();
                 courseDb.close();
                 Intent intent2 = new Intent(this, AssessmentListActivity.class);
-                intent.putExtra("com.ntlts.c196.COURSEID", courseId);
-                startActivity(intent2);
+                intent2.putExtra("com.ntlts.c196.COURSEID", courseId);
+                //startActivity(intent2);
+                setResult(RESULT_OK, intent2);
+                finish();
             }
         }
     }
@@ -270,18 +303,18 @@ public class AssessmentDetailActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        System.out.println("DEBUG AD ID: " + id);
         Assessment assessment;
         switch (id) {
             case android.R.id.home:
-                assessment = ah.getAssessment(assessmentDb, assessmentId);
-                assessmentDb.close();
-                courseDb.close();
+                Log.d("AD OnOption ASSESSMENTID: ", String.valueOf(String.valueOf(assessmentId)));
+                //assessment = ah.getAssessment(assessmentDb, assessmentId);
                 Intent intent = new Intent(this, AssessmentListActivity.class);
-                System.out.println("DEBUG AD COURSE: " + assessment.getCourseId());
-                intent.putExtra("com.ntlts.c196.COURSEID", assessment.getCourseId());
+                System.out.println("DEBUG AD COURSE: " + courseId);
+                intent.putExtra("com.ntlts.c196.COURSEID", courseId);
                 intent.putExtra("com.ntlts.c196.ADD", false);
                 setResult(RESULT_OK, intent);
+                assessmentDb.close();
+                courseDb.close();
                 finish();
                 return true;
             default:
@@ -304,5 +337,30 @@ public class AssessmentDetailActivity extends AppCompatActivity {
                 .setText(str).getIntent();
         shareActionProvider.setShareIntent(shareIntent);
         return true;
+    }
+    public void assessmentOnOnClick(View view){
+        Assessment assessmenet = ah.getAssessment(assessmentDb, assessmentId);
+        Intent intent=new Intent(AssessmentDetailActivity.this, MyReceiver.class);
+        intent.putExtra("com.ntlts.c196.FROM", "GOAL");
+        PendingIntent sender= PendingIntent.getBroadcast(AssessmentDetailActivity.this,3,intent,0);
+        AlarmManager alarmManager=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        //alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1000, sender);
+        String startStr = assessmenet.getGoalDate(); //yyyy-MM-dd
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        long milliGoal = 0;
+        try{
+            Date startDate = sdf.parse(startStr);
+            milliGoal = startDate.getTime();
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
+        alarmManager.set(AlarmManager.RTC_WAKEUP, milliGoal, sender);
+    }
+
+    public void assessmentOffOnClick(View view){
+        Intent intent=new Intent(AssessmentDetailActivity.this, MyReceiver.class);
+        PendingIntent sender= PendingIntent.getBroadcast(AssessmentDetailActivity.this,3,intent,0);
+        AlarmManager alarmManage= (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManage.cancel(sender);
     }
 }

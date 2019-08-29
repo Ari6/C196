@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import com.ntlts.c196.Assessment;
 import com.ntlts.c196.Course;
@@ -149,6 +150,7 @@ public class AssessmentHelper extends SQLiteOpenHelper {
         //values.put(AssessmentDB.AssessmentEntry.DUEDATE, assessment.getDueDate());
         values.put(AssessmentDB.AssessmentEntry.GOALDATE, assessment.getGoalDate());
         long newRowId = db.insert(AssessmentDB.AssessmentEntry.TABLE_NAME, null, values);
+        Log.d("INSERTASSESSMENT: ", String.valueOf(newRowId));
         return (int) newRowId;
     }
     public int updateAssessment(SQLiteDatabase db, Assessment assessment){
@@ -167,7 +169,12 @@ public class AssessmentHelper extends SQLiteOpenHelper {
                 selectionArgs);
         return (int) updateRowId;
     }
-    public void deleteAssessment(SQLiteDatabase db, int assessmentId){
-
+    public int deleteAssessment(SQLiteDatabase db, int assessmentId){
+        String selection = AssessmentDB.AssessmentEntry._ID + " = ?";
+        String[] selectionArgs = {String.valueOf(assessmentId)};
+        int deletedRows = db.delete(AssessmentDB.AssessmentEntry.TABLE_NAME,
+                selection,
+                selectionArgs);
+        return deletedRows;
     }
 }

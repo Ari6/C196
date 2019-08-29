@@ -42,8 +42,12 @@ import com.ntlts.c196.database.InitialCreation;
 import com.ntlts.c196.database.MentorHelper;
 import com.ntlts.c196.database.TermHelper;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -87,6 +91,9 @@ public class CourseDetailActivity extends AppCompatActivity
     private DatePickerDialog.OnDateSetListener startDateSetListener;
     private DatePickerDialog.OnDateSetListener anticipatedDateSetListener;
     private DatePickerDialog.OnDateSetListener dueDateSetListener;
+    private Button courseOn;
+    private Button courseOff;
+    private Button courseDeleteButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -160,25 +167,48 @@ public class CourseDetailActivity extends AppCompatActivity
         mentorEmail = findViewById(R.id.mentorEmail);
         courseAssessmentRecyclerView = findViewById(R.id.courseAssessmentRecyclerView);
         //Toggle Button
-        courseAlert = findViewById(R.id.courseAlert);
+        /*courseAlert = findViewById(R.id.courseAlert);
         courseAlert.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     // The toggle is enabled
                     Intent intent=new Intent(CourseDetailActivity.this, MyReceiver.class);
-                    PendingIntent sender= PendingIntent.getBroadcast(CourseDetailActivity.this,0,intent,0);
+                    intent.putExtra("com.ntlts.c196.FROM", "START");
+                    Intent intentEnd = new Intent(CourseDetailActivity.this, MyReceiver.class);
+                    intentEnd.putExtra("com.ntlts.c196.FROM", "END");
+                    PendingIntent sender= PendingIntent.getBroadcast(CourseDetailActivity.this,1,intent,0);
                     AlarmManager alarmManager=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1000, sender);
+                    PendingIntent senderEnd= PendingIntent.getBroadcast(CourseDetailActivity.this,2,intentEnd,0);
+                    AlarmManager alarmManagerEnd=(AlarmManager)getSystemService(Context.ALARM_SERVICE);                    //alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1000, sender);
+                    String startStr = course.getStart(); //yyyy-MM-dd
+                    String endStr = course.getAnticipatedEnd();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    long milliStart = 0;
+                    long milliEnd = 0;
+                    try{
+                        Date startDate = sdf.parse(startStr);
+                        Date endDate = sdf.parse(endStr);
+                        milliStart = startDate.getTime();
+                        milliEnd = endDate.getTime();
+                    } catch (ParseException e){
+                        e.printStackTrace();
+                    }
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, milliStart, sender);
+                    alarmManagerEnd.set(AlarmManager.RTC_WAKEUP, milliEnd, senderEnd);
                 } else {
                     // The toggle is disabled
-                    Intent intent=new Intent(CourseDetailActivity.this, MyReceiver.class);
-                    PendingIntent sender= PendingIntent.getBroadcast(CourseDetailActivity.this,0,intent,0);
+                    Intent intent = new Intent(CourseDetailActivity.this, MyReceiver.class);
+                    PendingIntent sender= PendingIntent.getBroadcast(CourseDetailActivity.this,1,intent,0);
                     AlarmManager alarmManage= (AlarmManager)getSystemService(Context.ALARM_SERVICE);
                     alarmManage.cancel(sender);
+                    Intent intent2 = new Intent(CourseDetailActivity.this, MyReceiver.class);
+                    PendingIntent sender2 = PendingIntent.getBroadcast(CourseDetailActivity.this,2,intent2,0);
+                    AlarmManager alarmManage2 = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+                    alarmManage2.cancel(sender2);
                 }
             }
         });
-
+        */
         if(intent.getBooleanExtra("com.ntlts.c196.ADD",false) == false) {
             courseTitleText.setText(course.getTitle());
             courseAnticipatedEnd.setText(course.getAnticipatedEnd());
@@ -288,7 +318,17 @@ public class CourseDetailActivity extends AppCompatActivity
                     courseDueDate.setText(String.format("%4d-%02d-%02d", year, month, day));
                 }
             };
-        } else {
+        } else { //When add
+            termId = intent.getIntExtra("com.ntlts.c196.TERMID", 0);
+            /*
+            Disable buttons
+             */
+            courseOn = findViewById(R.id.courseOn);
+            courseOff = findViewById(R.id.courseOff);
+            courseDeleteButton = findViewById(R.id.courseDeleteButton);
+            courseOn.setEnabled(false);
+            courseOff.setEnabled(false);
+            courseDeleteButton.setEnabled(false);
             /*
             date for start
              */
@@ -407,9 +447,11 @@ public class CourseDetailActivity extends AppCompatActivity
             Intent intent2 = getIntent();
             if (intent2.getBooleanExtra("com.ntlts.c196.ADD", false) == false) {
                 ch.updateCourse(courseDb, course);
+                termId = ch.getCourse(courseDb, course.getId()).getTermId();
                 popupUpdated("The record has been updated.");
             } else {
                 courseId = ch.insertCourse(courseDb, course);
+                termId = ch.getCourse(courseDb, course.getId()).getTermId();
                 popupUpdated("The record has been added.");
             }
         } else {
@@ -430,7 +472,7 @@ public class CourseDetailActivity extends AppCompatActivity
             courseDb.close();
             //mentorDb.close();
             Intent intent = new Intent(this, CourseListActivity.class);
-            intent.putExtra("com.ntlts.c196.TERMID", course.getTermId());
+            intent.putExtra("com.ntlts.c196.TERMID", termId);
             //startActivity(intent);
             finish();
         }
@@ -489,8 +531,8 @@ public class CourseDetailActivity extends AppCompatActivity
                 Course course = ch.getCourse(courseDb, courseId);
                 courseDb.close();
                 Intent intent = new Intent();
-                System.out.println("DEBUG CD TERMID: " + course.getTermId());
-                intent.putExtra("com.ntlts.c196.TERMID", course.getTermId());
+                System.out.println("DEBUG CD TERMID: " + termId);
+                intent.putExtra("com.ntlts.c196.TERMID", termId);
                 intent.putExtra("com.ntlts.c196.ADD", false);
                 setResult(RESULT_OK, intent);
                 finish();
@@ -687,5 +729,40 @@ public class CourseDetailActivity extends AppCompatActivity
                 .setText(str).getIntent();
         shareActionProvider.setShareIntent(shareIntent);
         return true;
+    }
+    public void courseOnOnClick(View view ){
+        Intent intent=new Intent(CourseDetailActivity.this, MyReceiver.class);
+        intent.putExtra("com.ntlts.c196.FROM", "START");
+        Intent intentEnd = new Intent(CourseDetailActivity.this, MyReceiver.class);
+        intentEnd.putExtra("com.ntlts.c196.FROM", "END");
+        PendingIntent sender= PendingIntent.getBroadcast(CourseDetailActivity.this,1,intent,0);
+        AlarmManager alarmManager=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        PendingIntent senderEnd= PendingIntent.getBroadcast(CourseDetailActivity.this,2,intentEnd,0);
+        AlarmManager alarmManagerEnd=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        String startStr = course.getStart(); //yyyy-MM-dd
+        String endStr = course.getAnticipatedEnd();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        long milliStart = 0;
+        long milliEnd = 0;
+        try{
+            Date startDate = sdf.parse(startStr);
+            Date endDate = sdf.parse(endStr);
+            milliStart = startDate.getTime();
+            milliEnd = endDate.getTime();
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
+        alarmManager.set(AlarmManager.RTC_WAKEUP, milliStart, sender);
+        alarmManagerEnd.set(AlarmManager.RTC_WAKEUP, milliEnd, senderEnd);
+    }
+    public void courseOffOnClick(View view){
+        Intent intent = new Intent(CourseDetailActivity.this, MyReceiver.class);
+        PendingIntent sender= PendingIntent.getBroadcast(CourseDetailActivity.this,1,intent,0);
+        AlarmManager alarmManage= (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManage.cancel(sender);
+        Intent intent2 = new Intent(CourseDetailActivity.this, MyReceiver.class);
+        PendingIntent sender2 = PendingIntent.getBroadcast(CourseDetailActivity.this,2,intent2,0);
+        AlarmManager alarmManage2 = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManage2.cancel(sender2);
     }
 }

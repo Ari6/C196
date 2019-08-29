@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
@@ -15,24 +16,42 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class MyReceiver extends BroadcastReceiver {
     static int notificationID;
-    String channel_id="test";
+    String channel_id="Course App";
     @Override
     public void onReceive(Context context, Intent intent) {
-        Toast.makeText(context,"Notification",Toast.LENGTH_LONG).show();
+        Toast.makeText(context,"Notification Received From Course App",Toast.LENGTH_LONG).show();
         createNotificationChannel(context,channel_id);
   /*      Notification n=new Notification.Builder(context)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setChannelId(channel_id)
                 .setContentTitle("Test Notification with an id of:"+Integer.toString(notificationID))
                 .setContentText("This is a test").build();*/
-        Notification n= new NotificationCompat.Builder(context, channel_id)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentText("This is a test")
-                .setContentTitle("Test of Notification with an id of :"+Integer.toString(notificationID)).build();
+        Log.d("MyReceiver", intent.getStringExtra("com.ntlts.c196.FROM"));
+        if(intent.getStringExtra("com.ntlts.c196.FROM").equals("START")) {
+            Notification n = new NotificationCompat.Builder(context, channel_id)
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setContentText("Course start date is today")
+                    .setContentTitle("Your course starts today with an id of :" + Integer.toString(notificationID)).build();
 
-        NotificationManager notificationManager=(NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(notificationID++,n);
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(notificationID++, n);
+        } else if(intent.getStringExtra("com.ntlts.c196.FROM").equals("END")){
+            Notification n = new NotificationCompat.Builder(context, channel_id)
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setContentText("Course end date is today")
+                    .setContentTitle("Your course ends today with an id of :" + Integer.toString(notificationID)).build();
 
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(notificationID++, n);
+        } else if(intent.getStringExtra("com.ntlts.c196.FROM").equals("GOAL")){
+            Notification n = new NotificationCompat.Builder(context, channel_id)
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setContentText("Your goal date is today")
+                    .setContentTitle("Your goal date is today with an id of :" + Integer.toString(notificationID)).build();
+
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(notificationID++, n);
+        }
         //Put a notification her aka Vogella Tutorial
 
         // TODO: This method is called when the BroadcastReceiver is receiving
