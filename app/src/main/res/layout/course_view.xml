@@ -17,7 +17,7 @@
         app:layout_constraintBottom_toTopOf="@+id/anticipatedEnd"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/courseName"
+        app:layout_constraintStart_toEndOf="@+id/progressCourseName"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -29,7 +29,7 @@
         android:layout_marginTop="16dp"
         android:text="TextView"
         app:layout_constraintStart_toEndOf="@+id/courseStart"
-        app:layout_constraintTop_toBottomOf="@+id/courseName" />
+        app:layout_constraintTop_toBottomOf="@+id/progressCourseName" />
 
     <TextView
         android:id="@+id/courseStart"
@@ -39,10 +39,10 @@
         android:layout_marginTop="16dp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/courseName" />
+        app:layout_constraintTop_toBottomOf="@+id/progressCourseName" />
 
     <TextView
-        android:id="@+id/courseName"
+        android:id="@+id/progressCourseName"
         android:layout_width="147dp"
         android:layout_height="31dp"
         android:layout_marginStart="16dp"

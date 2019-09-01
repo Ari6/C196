@@ -54,7 +54,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseHold
 
         public CourseHolder(@NonNull View itemView, OnCourseClickListener onCourseClickListener) {
             super(itemView);
-            courseName = itemView.findViewById(R.id.courseName);
+            courseName = itemView.findViewById(R.id.progressCourseName);
             status = itemView.findViewById(R.id.status);
             start = itemView.findViewById(R.id.courseStart);
             anticipatedEnd = itemView.findViewById(R.id.anticipatedEnd);

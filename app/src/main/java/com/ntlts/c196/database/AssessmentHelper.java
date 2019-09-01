@@ -177,4 +177,50 @@ public class AssessmentHelper extends SQLiteOpenHelper {
                 selectionArgs);
         return deletedRows;
     }
+    public List<Assessment> getAllAssessment(SQLiteDatabase db){
+        String[] projection = {
+                BaseColumns._ID,
+                AssessmentDB.AssessmentEntry.TITLE,
+                //AssessmentDB.AssessmentEntry.DUEDATE,
+                AssessmentDB.AssessmentEntry.OAPA,
+                AssessmentDB.AssessmentEntry.PERFORMANCE,
+                AssessmentDB.AssessmentEntry.COURSEID,
+                AssessmentDB.AssessmentEntry.GOALDATE
+        };
+        String sortOrder = AssessmentDB.AssessmentEntry.GOALDATE;
+        Cursor cursor = db.query(
+                AssessmentDB.AssessmentEntry.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                sortOrder
+        );
+
+        List<Assessment> assessmentList = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            Assessment assessment = new Assessment();
+            assessment.setAssessmentId(cursor.getInt(
+                    cursor.getColumnIndexOrThrow(AssessmentDB.AssessmentEntry._ID)));
+            assessment.setTitle(
+                    cursor.getString(
+                            cursor.getColumnIndexOrThrow(AssessmentDB.AssessmentEntry.TITLE)));
+            assessment.setOaPa(
+                    cursor.getString(
+                            cursor.getColumnIndexOrThrow(AssessmentDB.AssessmentEntry.OAPA)));
+            /*assessment.setDueDate(
+                    cursor.getString(
+                            cursor.getColumnIndexOrThrow(AssessmentDB.AssessmentEntry.DUEDATE)));*/
+            assessment.setPerformance(cursor.getString(
+                    cursor.getColumnIndexOrThrow(AssessmentDB.AssessmentEntry.PERFORMANCE)));
+            assessment.setCourseId(
+                    cursor.getInt(cursor.getColumnIndexOrThrow(AssessmentDB.AssessmentEntry.COURSEID)));
+            assessment.setGoalDate(
+                    cursor.getString(cursor.getColumnIndexOrThrow(AssessmentDB.AssessmentEntry.GOALDATE)));
+            assessmentList.add(assessment);
+        }
+        cursor.close();
+        return assessmentList;
+    }
 }

@@ -31,6 +31,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.ShareActionProvider;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.constraintlayout.widget.Constraints;
 import androidx.core.app.ShareCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -166,12 +169,18 @@ public class CourseDetailActivity extends AppCompatActivity
         mentorPhone = findViewById(R.id.mentorPhone);
         mentorEmail = findViewById(R.id.mentorEmail);
         courseAssessmentRecyclerView = findViewById(R.id.courseAssessmentRecyclerView);
-        //Toggle Button
-        /*courseAlert = findViewById(R.id.courseAlert);
-        courseAlert.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    // The toggle is enabled
+
+        if(intent.getBooleanExtra("com.ntlts.c196.ADD",false) == false) {
+            //dynamic button
+            ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.courseDetailConstraint);
+            ConstraintSet set = new ConstraintSet();
+            set.clone(layout);
+            courseOn = new Button(this);
+            courseOn.setText("On");
+            courseOn.setId(R.id.courseOn);
+            courseOn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
                     Intent intent=new Intent(CourseDetailActivity.this, MyReceiver.class);
                     intent.putExtra("com.ntlts.c196.FROM", "START");
                     Intent intentEnd = new Intent(CourseDetailActivity.this, MyReceiver.class);
@@ -179,7 +188,7 @@ public class CourseDetailActivity extends AppCompatActivity
                     PendingIntent sender= PendingIntent.getBroadcast(CourseDetailActivity.this,1,intent,0);
                     AlarmManager alarmManager=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
                     PendingIntent senderEnd= PendingIntent.getBroadcast(CourseDetailActivity.this,2,intentEnd,0);
-                    AlarmManager alarmManagerEnd=(AlarmManager)getSystemService(Context.ALARM_SERVICE);                    //alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1000, sender);
+                    AlarmManager alarmManagerEnd=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
                     String startStr = course.getStart(); //yyyy-MM-dd
                     String endStr = course.getAnticipatedEnd();
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -195,21 +204,17 @@ public class CourseDetailActivity extends AppCompatActivity
                     }
                     alarmManager.set(AlarmManager.RTC_WAKEUP, milliStart, sender);
                     alarmManagerEnd.set(AlarmManager.RTC_WAKEUP, milliEnd, senderEnd);
-                } else {
-                    // The toggle is disabled
-                    Intent intent = new Intent(CourseDetailActivity.this, MyReceiver.class);
-                    PendingIntent sender= PendingIntent.getBroadcast(CourseDetailActivity.this,1,intent,0);
-                    AlarmManager alarmManage= (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-                    alarmManage.cancel(sender);
-                    Intent intent2 = new Intent(CourseDetailActivity.this, MyReceiver.class);
-                    PendingIntent sender2 = PendingIntent.getBroadcast(CourseDetailActivity.this,2,intent2,0);
-                    AlarmManager alarmManage2 = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-                    alarmManage2.cancel(sender2);
                 }
-            }
-        });
-        */
-        if(intent.getBooleanExtra("com.ntlts.c196.ADD",false) == false) {
+            });
+            courseOff = findViewById(R.id.courseOff);
+            layout.addView(courseOn);
+            set.connect(courseOn.getId(), ConstraintSet.BOTTOM, layout.getId(), ConstraintSet.BOTTOM, 16);
+            set.connect(courseOn.getId(), ConstraintSet.RIGHT, courseOff.getId(), ConstraintSet.LEFT, 16);
+            set.connect(courseOn.getId(), ConstraintSet.BASELINE, R.id.textView19, ConstraintSet.BASELINE);
+            set.constrainWidth(courseOn.getId(), ConstraintSet.WRAP_CONTENT);
+            set.constrainHeight(courseOn.getId(), ConstraintSet.WRAP_CONTENT);
+            set.applyTo(layout);
+
             courseTitleText.setText(course.getTitle());
             courseAnticipatedEnd.setText(course.getAnticipatedEnd());
             //courseDueDate.setText(course.getDueDate());
@@ -323,10 +328,10 @@ public class CourseDetailActivity extends AppCompatActivity
             /*
             Disable buttons
              */
-            courseOn = findViewById(R.id.courseOn);
+            //courseOn = findViewById(R.id.courseOn);
             courseOff = findViewById(R.id.courseOff);
             courseDeleteButton = findViewById(R.id.courseDeleteButton);
-            courseOn.setEnabled(false);
+            //courseOn.setEnabled(false);
             courseOff.setEnabled(false);
             courseDeleteButton.setEnabled(false);
             /*
@@ -447,11 +452,12 @@ public class CourseDetailActivity extends AppCompatActivity
             Intent intent2 = getIntent();
             if (intent2.getBooleanExtra("com.ntlts.c196.ADD", false) == false) {
                 ch.updateCourse(courseDb, course);
-                termId = ch.getCourse(courseDb, course.getId()).getTermId();
+                termId = course.getTermId();
                 popupUpdated("The record has been updated.");
             } else {
                 courseId = ch.insertCourse(courseDb, course);
-                termId = ch.getCourse(courseDb, course.getId()).getTermId();
+                termId = course.getTermId();
+                Log.d("CD ADD TERMID", String.valueOf(termId));
                 popupUpdated("The record has been added.");
             }
         } else {
@@ -528,7 +534,7 @@ public class CourseDetailActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                Course course = ch.getCourse(courseDb, courseId);
+                //Course course = ch.getCourse(courseDb, courseId);
                 courseDb.close();
                 Intent intent = new Intent();
                 System.out.println("DEBUG CD TERMID: " + termId);

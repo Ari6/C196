@@ -88,7 +88,7 @@ public class TermHelper extends SQLiteOpenHelper {
                 TermDB.TermEntry.START_DATE,
                 TermDB.TermEntry.END_DATE
         };
-        String sortOrder = TermDB.TermEntry.START_DATE;
+        String sortOrder = TermDB.TermEntry.TITLE;
         Cursor cursor = db.query(
                 TermDB.TermEntry.TABLE_NAME,
                 projection,

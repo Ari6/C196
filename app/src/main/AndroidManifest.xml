@@ -49,7 +49,10 @@
             android:name=".MyReceiver"
             android:enabled="true"
             android:exported="true" />
-
+        <activity
+            android:name=".ProgressActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
     </application>
 
 </manifest>

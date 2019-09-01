@@ -79,22 +79,18 @@ public class CourseHelper extends SQLiteOpenHelper {
             Course course = new Course();
             course.setId((int) cursor.getLong(
                     cursor.getColumnIndexOrThrow(CourseDB.CourseEntry._ID)));
-            course.setTitle(
-                    cursor.getString(
+            course.setTitle(cursor.getString(
                             cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.TITLE)));
-            course.setStart(
-                    cursor.getString(
+            course.setStart(cursor.getString(
                             cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.START)));
-            course.setAnticipatedEnd(
-                    cursor.getString(
+            course.setAnticipatedEnd(cursor.getString(
                             cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.ANTICIPATED_DATE)));
-            course.setDueDate(
-                    cursor.getString(
+            course.setDueDate(cursor.getString(
                             cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.DUE_DATE)));
             course.setNote(cursor.getString(
                     cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.NOTE)));
-            course.setStatus(
-                    cursor.getString(cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.STATUS)));
+            course.setStatus(cursor.getString(
+                    cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.STATUS)));
             //course.setMentorId(cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.MENTORID));
             course.setTermId(cursor.getInt(
                     cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.TERMID)));
@@ -272,7 +268,8 @@ public class CourseHelper extends SQLiteOpenHelper {
             course.setStatus(
                     cursor.getString(cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.STATUS)));
             //course.setMentorId(cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.MENTORID));
-            course.setTermId(cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.TERMID));
+            course.setTermId(cursor.getInt(
+                    cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.TERMID)));
             course.setMentorName(cursor.getString(
                     cursor.getColumnIndexOrThrow(CourseDB.CourseEntry.MENTORNAME)));
             course.setMentorPhone(cursor.getString(

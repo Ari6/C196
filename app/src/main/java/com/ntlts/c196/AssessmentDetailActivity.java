@@ -44,7 +44,8 @@ import java.util.List;
 public class AssessmentDetailActivity extends AppCompatActivity {
     private Toolbar assessmentDetailToolbar;
     private EditText assessmentTitleEdit;
-    private EditText assessmentPerformance;
+    //private EditText assessmentPerformance;
+    private Spinner performanceSpinner;
     private TextView assessmentDueDate;
     private TextView assessmentNote;
     private EditText assessmentGoalDate;
@@ -64,6 +65,7 @@ public class AssessmentDetailActivity extends AppCompatActivity {
     private Button assessmentOn;
     private Button assessmentOff;
     private Button assessmentDeleteButton;
+    String[] performanceList = {"Passed", "Failed", "-"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,12 +89,13 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         Course courseForDue = ch.getCourse(courseDb, assessment.getCourseId());
         //setIDs
         assessmentTitleEdit = findViewById(R.id.assessmentTitleEdit);
-        assessmentPerformance = findViewById(R.id.assessmentPerformanceEdit);
+        //assessmentPerformance = findViewById(R.id.assessmentPerformanceEdit);
+        performanceSpinner = findViewById(R.id.performanceSpinner);
         assessmentDueDate = findViewById(R.id.assessmentDueDateEdit);
         assessmentGoalDate = findViewById(R.id.assessmentGoalDateEdit);
         assessmentNote = findViewById(R.id.assessmentNote);
         assessmentTitleEdit.setText(assessment.getTitle());
-        assessmentPerformance.setText(assessment.getPerformance());
+        //assessmentPerformance.setText(assessment.getPerformance());
         //assessmentDueDate.setText(assessment.getDueDate());
         assessmentDueDate.setText(courseForDue.getDueDate());
         assessmentGoalDate.setText(assessment.getGoalDate());
@@ -137,6 +140,28 @@ public class AssessmentDetailActivity extends AppCompatActivity {
             }
         }
         spinnerCourse.setSelection(spinnerCoursePosition);
+
+        //spinner performance
+        ArrayAdapter<String> performanceAdapter =
+                new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item);
+        for(String str: performanceList){
+            performanceAdapter.add(str);
+        }
+        performanceSpinner.setAdapter(performanceAdapter);
+
+        //set selected spinner Performance
+        int performancePosition = 0;
+        for(int i = 0; i < performanceList.length; i++){
+            if(performanceList[i].equals(assessment.getPerformance())){
+                performancePosition = i;
+                break;
+            }
+        }
+        performanceSpinner.setSelection(performancePosition);
+
+        /*
+        Add
+         */
         if(intent.getBooleanExtra("com.ntlts.c196.ADD", false) == false){
             courseId = assessment.getCourseId();
 
@@ -218,7 +243,8 @@ public class AssessmentDetailActivity extends AppCompatActivity {
             assessment.setTitle(assessmentTitleEdit.getText().toString());
             assessment.setGoalDate(assessmentGoalDate.getText().toString());
             //assessment.setDueDate(assessmentDueDate.getText().toString());
-            assessment.setPerformance(assessmentPerformance.getText().toString());
+            //assessment.setPerformance(assessmentPerformance.getText().toString());
+            assessment.setPerformance(performanceSpinner.getSelectedItem().toString());
             assessment.setCourseId(courseList.get(spinnerCourse.getSelectedItemPosition()).getId());
             assessment.setOaPa(oaPaList[spinnerOaPa.getSelectedItemPosition()]);
             Intent intent = getIntent();
