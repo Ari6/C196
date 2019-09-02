@@ -721,6 +721,7 @@ public class CourseDetailActivity extends AppCompatActivity
         startActivityForResult(intent, 4);
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -731,10 +732,18 @@ public class CourseDetailActivity extends AppCompatActivity
         System.out.println("DEBUG CD ONCREATE COURSEID: " + courseId);
         Course course = ch.getCourse(courseDb, courseId);
         String str = course.getNote();
-        Intent shareIntent = ShareCompat.IntentBuilder.from(this).setType("text/plain")
+        shareActionProvider.setShareIntent(createShareIntent(str));
+        /*Intent shareIntent = ShareCompat.IntentBuilder.from(this).setType("text/plain")
                 .setText(str).getIntent();
-        shareActionProvider.setShareIntent(shareIntent);
+        shareActionProvider.setShareIntent(shareIntent);*/
         return true;
+    }
+    private Intent createShareIntent(String str) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Note");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, str);
+        return shareIntent;
     }
     public void courseOnOnClick(View view ){
         Intent intent=new Intent(CourseDetailActivity.this, MyReceiver.class);
