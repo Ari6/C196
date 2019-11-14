@@ -4,6 +4,8 @@ This is a project for C196.
 ## Overview
 This is an android app that allows you to manage your classes. You can see classes in each term. You can also set a notification for the class's due date.
 
+This purpose is mainly to know how to build JavaFX application using database.
+
 ## Technical Summary
 * Using SQLite to store data locally
 * Using helper class
